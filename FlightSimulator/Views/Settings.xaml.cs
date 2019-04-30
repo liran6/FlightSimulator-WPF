@@ -11,22 +11,20 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using FlightSimulator.ViewModels.Windows;
+using FlightSimulator.Model;
 
-namespace FlightSimulator
+namespace FlightSimulator.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for win.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Settings : Window
     {
-        public MainWindow()
+        public Settings()
         {
-            InitializeComponent();
-        }
-
-        private void FlightBoardWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-
+           InitializeComponent();
+            //DataContext = new SettingsWindowViewModel(ApplicationSettingsModel.Instance, this);
         }
     }
 }

@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="FlightSimulator.Views.JoystickWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:joystickWindow="clr-namespace:FlightSimulator.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="420" d:DesignWidth="465">
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="23"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="290"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="23"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="23"></ColumnDefinition>
+            <ColumnDefinition Width="30"></ColumnDefinition>
+            <ColumnDefinition Width="340"></ColumnDefinition>
+            <ColumnDefinition Width="55"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="← rudder →" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Center" FontSize="15" 
+                   FontWeight="Bold" Background="White"></TextBlock>
+        <TextBlock Text="← aileron →" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" FontSize="15" 
+                   FontWeight="Bold" Background="White"></TextBlock>
+        <TextBlock Text="← thorttel →" Grid.Row="2" VerticalAlignment="Center" Grid.Column="0" FontSize="15" 
+                   Background="White" FontWeight="Bold">
+          <TextBlock.LayoutTransform>
+                <RotateTransform Angle="90"/>
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+      <TextBlock Text="← elevator →" Grid.Row="2" Grid.Column="3" VerticalAlignment="Center" FontSize="15" 
+                 Background="White" FontWeight="Bold">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="90"/>
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        <Slider Grid.Row="2" Grid.Column="1" BorderBrush="White" Value="{Binding ChangeThrottle}" Name="LeftS" 
+                Minimum="0" Maximum="1" Width="30" TickPlacement="TopLeft" TickFrequency="0.1" 
+                Orientation="Vertical"></Slider>
+        <Slider Grid.Row="3" Grid.Column="2" BorderBrush="White" Value="{Binding ChangeRudder}" Name="ButtomR" 
+                Minimum="-1" Maximum="1" Width="300" TickPlacement="TopLeft" TickFrequency="0.2"></Slider>
+        <TextBlock Background="White" FontSize="15" FontWeight="Bold" Name="thorttelVal" Grid.Row="1" Grid.Column="2" 
+                 Text="{Binding ElementName=LeftS, Path=Value, StringFormat=N2}" ></TextBlock>
+        <TextBlock Background="White" FontSize="15" FontWeight="Bold" Name="rudderVal" Grid.Row="3" Grid.Column="3" 
+                   Text="{Binding ElementName=ButtomR, Path=Value, StringFormat=N2}" ></TextBlock>
+        <TextBlock Background="White" FontSize="15"  FontWeight="Bold" Name="elevatorVal" Grid.Row="1" Grid.Column="3" 
+                 Text="{Binding ElementName=Joyst, Path=Elevator, StringFormat=N2}" >
+             <TextBlock.LayoutTransform>
+                <RotateTransform Angle="90"/>
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        <TextBlock Background="White" FontSize="15" FontWeight="Bold" Name="ailerinVal" HorizontalAlignment="Left" 
+                 Grid.Row="0" Grid.Column="3" 
+                 Text="{Binding ElementName=Joyst, Path=Aileron, StringFormat=N2}" ></TextBlock>
+        <joystickWindow:Joystick Grid.Row="1" Grid.RowSpan="2" Grid.Column="2"  BorderBrush="White" x:Name="Joyst" 
+                                 HorizontalAlignment="Center" Aileron="{Binding Aileron, Mode=OneWayToSource}" 
+                                 Elevator="{Binding Elevator, Mode=OneWayToSource}"></joystickWindow:Joystick>
+    </Grid>
+</UserControl>

@@ -18,6 +18,7 @@ using FlightSimulator.ViewModels;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 
+
 namespace FlightSimulator.Views
 {
     /// <summary>
@@ -29,6 +30,10 @@ namespace FlightSimulator.Views
         public FlightBoard()
         {
             InitializeComponent();
+
+            // stores the get notify from viewModel
+           // FlightBoardViewModel.Instance.PropertyChanged += Vm_PropertyChanged;
+
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -40,16 +45,18 @@ namespace FlightSimulator.Views
             plotter.AddLineGraph(planeLocations, 2, "Route");
         }
 
+        /*
+         * draw the new point in the screen
+         */
         private void Vm_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if(e.PropertyName.Equals("Lat") || e.PropertyName.Equals("Lon"))
+            if (e.PropertyName.Equals("Lat") || e.PropertyName.Equals("Lon"))
             {
-                Point p1 = new Point(0,0);            // Fill here!
-                planeLocations.AppendAsync(Dispatcher, p1);
+                // Fill here!
+                //Point p1 = new Point(FlightBoardViewModel.Instance.Lat, FlightBoardViewModel.Instance.Lon);
+               // planeLocations.AppendAsync(Dispatcher, p1);
             }
         }
-
     }
-
 }
 

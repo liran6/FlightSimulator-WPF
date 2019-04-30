@@ -10,23 +10,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using FlightSimulator.ViewModels;
 
-namespace FlightSimulator
+namespace FlightSimulator.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for JoystickWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class JoystickWindow : UserControl
     {
-        public MainWindow()
+        public JoystickWindow()
         {
             InitializeComponent();
-        }
-
-        private void FlightBoardWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-
+           // DataContext = new JoystickViewModel();
         }
     }
 }
