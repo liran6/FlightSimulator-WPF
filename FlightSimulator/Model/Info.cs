@@ -24,8 +24,8 @@ namespace FlightSimulator.Model
         Thread thread;
         TcpClient client;
         TcpListener serverSide;
-        BinaryReader reader;
-        NetworkStream stream;
+      //  BinaryReader reader;
+       // NetworkStream stream;
 
 
         // constructor to initialize 
@@ -76,20 +76,23 @@ namespace FlightSimulator.Model
         /*
  * open & connect to the server , send data from the simulator.
  */
-        public void startServer()
+        public void openServer()
         {
-            IPEndPoint eP = new IPEndPoint(IPAddress.Parse(Properties.Settings.Default.FlightServerIP),
+            try
+            {
+                IPEndPoint eP = new IPEndPoint(IPAddress.Parse(Properties.Settings.Default.FlightServerIP),
                                                       Properties.Settings.Default.FlightInfoPort);
-            this.serverSide = new TcpListener(eP);
-            this.stream = this.client.GetStream();
-            this.reader = new BinaryReader(stream);
+            serverSide = new TcpListener(eP);
+            this.serverSide.Start();
+            this.client = serverSide.AcceptTcpClient();
+            NetworkStream stream = this.client.GetStream();
+            BinaryReader reader = new BinaryReader(stream);
             String[] splitInput;
 
             // opens server
-            this.serverSide.Start();
-            this.client = serverSide.AcceptTcpClient();
-            
-            while (!stop)
+
+            Thread t = new Thread(() => {
+                while (!stop)
             {
                 // read the input fron the simulator
                 string input = "";
@@ -109,19 +112,25 @@ namespace FlightSimulator.Model
                 FlightBoardViewModel.getInstance.Lat = float.Parse(splitInput[1]);
 
             }
+                stream.Close();
+                client.Close();
+            });
+                t.Start();
+            }
+            catch (SocketException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                serverSide.Stop();
+            }
         }
         public bool isServerOpen()
         {
             return this.serverSide != null;
         }
-        /*
- * activate the startServer from a thread
- */
-        public void openServer()
-        {
-            this.thread = new Thread(() => startServer());
-            thread.Start();
-        }
+
 
         public void closeServer()
         {

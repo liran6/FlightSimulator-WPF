@@ -32,7 +32,7 @@ namespace FlightSimulator.Views
             InitializeComponent();
 
             // stores the get notify from viewModel
-           // FlightBoardViewModel.Instance.PropertyChanged += Vm_PropertyChanged;
+            FlightBoardViewModel.getInstance.PropertyChanged += Vm_PropertyChanged;
 
         }
 
@@ -53,8 +53,10 @@ namespace FlightSimulator.Views
             if (e.PropertyName.Equals("Lat") || e.PropertyName.Equals("Lon"))
             {
                 // Fill here!
-                //Point p1 = new Point(FlightBoardViewModel.Instance.Lat, FlightBoardViewModel.Instance.Lon);
-               // planeLocations.AppendAsync(Dispatcher, p1);
+                FlightBoardViewModel flightVM;
+                flightVM = sender as FlightBoardViewModel;
+                Point p1 = new Point(flightVM.Lat, flightVM.Lon);
+                planeLocations.AppendAsync(Dispatcher, p1);
             }
         }
     }

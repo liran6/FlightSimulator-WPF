@@ -18,11 +18,9 @@
         <WrapPanel Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center">
             <Button Height="30" Width="70" HorizontalAlignment="Center" FontWeight="Bold"  Margin="10" 
                     Command="{Binding ConnectCommand}">Connect</Button>
-            <Button Height="30" Width="70" HorizontalAlignment="Center" FontWeight="Bold" Margin="10" 
+                <Button Height="30" Width="70" HorizontalAlignment="Center" FontWeight="Bold" Margin="10" 
                     Command="{Binding OpenSettingsWindow}">Settings</Button>
-            <Button Height="30" Width="70" HorizontalAlignment="Center" FontWeight="Bold" Margin="10" 
-                    Command="{Binding DisconnectCommand}">Disconnect</Button>
-        </WrapPanel>
+            </WrapPanel>
         <flightBoardWindow:FlightBoard Grid.Row="1" Grid.Column="0"></flightBoardWindow:FlightBoard>
     </Grid>
     </Viewbox>

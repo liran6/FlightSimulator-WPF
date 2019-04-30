@@ -65,7 +65,7 @@ namespace FlightSimulator.Model
         */
         public void sendToSimulator(string userCommands)
         {
-            if (null == client) return;
+            if (isConnected) return;
 
             // split command by the current environment
             string[] commands = userCommands.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -88,7 +88,7 @@ namespace FlightSimulator.Model
 
         public void JoystickSendToSimulator(string command)
         {
-            if (client == null)
+            if (!isConnected)
             {
                 return;
             }
@@ -115,9 +115,9 @@ namespace FlightSimulator.Model
         public void closeClient()
         {
             this.isConnected = false;
-            if (this.sendThread != null)
+            if (this.thread != null)
             {
-                this.sendThread.Abort();
+                this.thread.Abort();
             }
             this.thread.Abort();
             this.client.Close();

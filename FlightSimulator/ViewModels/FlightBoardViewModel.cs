@@ -12,15 +12,105 @@ namespace FlightSimulator.ViewModels
 {
     public class FlightBoardViewModel : BaseNotify
     {
+        private ICommand setCommand;
+        private double lat;
+        private double lon;
+        private static FlightBoardViewModel instance = null;
 
-        public double Lon
+        /*
+         * singleton to create only one instance of the FlightBoardViewModel
+        */
+        public static FlightBoardViewModel getInstance
         {
-            get;
+            get
+            {
+                return null == instance ? instance = new FlightBoardViewModel() : instance;
+            }
         }
 
+        // Property of OpenSettingsWindow
+        public ICommand OpenSettingsWindow
+        {
+            get
+            {
+                // activate OnClick
+                return setCommand ?? (setCommand = new CommandHandler(() => OnClick()));
+            }
+        }
+
+        /*
+         * open the settings window
+         */
+        private void OnClick()
+        {
+            Settings settings = new Settings();
+            // shows the window
+            settings.ShowDialog();
+        }
+
+
+        bool isConnect = false;
+        private ICommand connectCommand;
+
+        // Property of ConnectCommand
+        public ICommand ConnectCommand
+        {
+            get
+            {
+                // activate ConnectClick
+                return connectCommand ?? (connectCommand = new CommandHandler(() => ConnectClick()));
+            }
+        }
+
+        /*
+          * if not connected- connect the client and server
+        */
+        private void ConnectClick()
+        {
+            // only if not connected- connect.
+            if (!this.isConnect)
+            {
+                this.open();
+                this.isConnect = true;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        private void open()
+        {
+            Info.getInstance.openServer();
+            Command.getInstance.startClient();
+        }
+
+        // Property of Lon
+        public double Lon
+        {
+            get
+            {
+                return this.lon;
+            }
+            set
+            {
+                this.lon = value;
+                NotifyPropertyChanged("Lon");
+            }
+        }
+
+        // Property of Lat
         public double Lat
         {
-            get;
+            get
+            {
+                return this.lat;
+            }
+            set
+            {
+                this.lat = value;
+                NotifyPropertyChanged("Lat");
+            }
         }
     }
 }
