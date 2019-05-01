@@ -10,65 +10,56 @@ using System.Net.Sockets;
 
 namespace FlightSimulator.Model
 {
-    class Command
+    class ConnectionCommand
     {
         private bool isConnected;
-        private static Command instance = null;
+        private static ConnectionCommand instance = null;
         private Thread thread;
-        //private Thread sendThread;
         private NetworkStream networkStream;
         private TcpListener serverSide;
         private TcpClient client;
         private readonly static object mut = new object();
 
 
-        public Command()
+        public ConnectionCommand()
         {
             this.isConnected = false;
         }
 
-        public static Command getInstance
+        public static ConnectionCommand getInstance
         {
             get
             {
-                return instance == null ? instance = new Command() : instance;
+                return instance == null ? instance = new ConnectionCommand() : instance;
             }
         }
 
-        /*
-    * open client and connect to the server
-    */
-        void connectToServer()
+      public void ConnectToServer()
         {
-            IPEndPoint eP = new IPEndPoint(IPAddress.Parse(Properties.Settings.Default.FlightServerIP),
-                                                  Properties.Settings.Default.FlightCommandPort);
-            this.client = new TcpClient();
-            this.serverSide = new TcpListener(eP);
-
-            // connect to server
-            while (!client.Connected)
+            this.thread = new Thread(() =>
             {
-                try
-                {
-                    client.Connect(eP);
-                }
-                catch (Exception)
-                {
-                }
-            }
-
-            isConnected = true;
-            this.networkStream = client.GetStream();
+                try { 
+                IPEndPoint eP = new IPEndPoint(IPAddress.Parse(Properties.Settings.Default.FlightServerIP),
+                                                   Properties.Settings.Default.FlightCommandPort);
+                this.client = new TcpClient();
+                this.serverSide = new TcpListener(eP);
+                client.Connect(eP);
+                    }
+                    catch (Exception)
+                    {
+                    }              
+                isConnected = true;
+                this.networkStream = client.GetStream();
+            });
+            thread.Start();
         }
         /*
         *sending commands from the auto pilot.
         */
-        public void sendToSimulator(string userCommands)
+        public void AutoSend(string[] commands)
         {
-            if (isConnected) return;
+            if (!isConnected) return;
 
-            // split command by the current environment
-            string[] commands = userCommands.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             Thread t = new Thread(() =>
             {
                 foreach (string command in commands)
@@ -86,27 +77,17 @@ namespace FlightSimulator.Model
             t.Start();
         }
 
-        public void JoystickSendToSimulator(string command)
+        public void JoystickSend(string path, double val)
         {
             if (!isConnected)
             {
                 return;
             }
-        
-            string line = command + "\r\n";
-            byte[] buffer = System.Text.Encoding.ASCII.GetBytes(line.ToString());
+            string strVal = val.ToString("0.00");
+            string command = "set " + path + " " + strVal + "\r\n";        
+            byte[] buffer = System.Text.Encoding.ASCII.GetBytes(command.ToString());
             networkStream.Write(buffer, 0, buffer.Length);       
             networkStream.Flush();              
-        }
-
-
-        /*
- * activate the connectToServer from a thread
- */
-        public void startClient()
-        {
-            this.thread = new Thread(() => connectToServer());
-            thread.Start();
         }
 
         /*

@@ -27,14 +27,42 @@ namespace FlightSimulator.ViewModels
                 return null == instance ? instance = new FlightBoardViewModel() : instance;
             }
         }
+        // Property of Lat
+        public double Lat
+        {
+            get
+            {
+                return this.lat;
+            }
+            set
+            {
+                this.lat = value;
+                NotifyPropertyChanged("Lat");
+            }
+        }
+
+        // Property of Lon
+        public double Lon
+        {
+            get
+            {
+                return this.lon;
+            }
+            set
+            {
+                this.lon = value;
+                NotifyPropertyChanged("Lon");
+            }
+        }
+
 
         // Property of OpenSettingsWindow
         public ICommand OpenSettingsWindow
         {
             get
             {
-                // activate OnClick
-                return setCommand ?? (setCommand = new CommandHandler(() => OnClick()));
+          
+                return setCommand == null ? (setCommand = new CommandHandler(() => OnClick())) : setCommand;
             }
         }
 
@@ -52,13 +80,12 @@ namespace FlightSimulator.ViewModels
         bool isConnect = false;
         private ICommand connectCommand;
 
-        // Property of ConnectCommand
         public ICommand ConnectCommand
         {
             get
             {
                 // activate ConnectClick
-                return connectCommand ?? (connectCommand = new CommandHandler(() => ConnectClick()));
+                return connectCommand  == null ? (connectCommand = new CommandHandler(() => ConnectClick())) : connectCommand;
             }
         }
 
@@ -81,36 +108,13 @@ namespace FlightSimulator.ViewModels
 
         private void open()
         {
-            Info.getInstance.openServer();
-            Command.getInstance.startClient();
+            new Task(() =>
+            {
+                ConnectionInfo.getInstance.openInfoServer();
+                ConnectionCommand.getInstance.ConnectToServer();
+            }).Start();
         }
 
-        // Property of Lon
-        public double Lon
-        {
-            get
-            {
-                return this.lon;
-            }
-            set
-            {
-                this.lon = value;
-                NotifyPropertyChanged("Lon");
-            }
-        }
 
-        // Property of Lat
-        public double Lat
-        {
-            get
-            {
-                return this.lat;
-            }
-            set
-            {
-                this.lat = value;
-                NotifyPropertyChanged("Lat");
-            }
-        }
     }
 }

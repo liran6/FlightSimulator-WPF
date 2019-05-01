@@ -15,12 +15,10 @@ namespace FlightSimulator.Model
     /**
      * class info incharge of the connection of the simlator to the flightgear and the info transfermation between them.
      */
-   public class Info
+   public class ConnectionInfo
     {
-        private float lon;
-        private float lat;
         private bool stop;
-        private static Info instance = null;
+        private static ConnectionInfo instance = null;
         Thread thread;
         TcpClient client;
         TcpListener serverSide;
@@ -29,58 +27,37 @@ namespace FlightSimulator.Model
 
 
         // constructor to initialize 
-        public Info()
+        public ConnectionInfo()
         {
-            lon = 0.0f;
-            lat = 0.0f;
+            Lon = 0.0f;
+            Lat = 0.0f;
             stop = false;
+            
         }
 
         // Property of Lon
-        public float Lon
-        {
-            get
-            {
-                return lon;
-            }
-            set
-            {
-                lon = value;
-            }
-        }
+        public float Lon { get; set; }
 
         // Property of Lat
-        public float Lat
-        {
-            get
-            {
-                return lat;
-            }
-            set
-            {
-                lat = value;
-            }
-        }
+        public float Lat { get; set; }
 
         /*
 * singleton create only one instance of info
 */
-        public static Info getInstance
+        public static ConnectionInfo getInstance
         {
             get
             {
-                return instance == null ? instance = new Info() : instance;
+                return instance == null ? instance = new ConnectionInfo() : instance;
             }
         }
 
-        /*
- * open & connect to the server , send data from the simulator.
- */
-        public void openServer()
+
+        public void openInfoServer()
         {
             try
             {
-                IPEndPoint eP = new IPEndPoint(IPAddress.Parse(Properties.Settings.Default.FlightServerIP),
+            IPEndPoint eP = new IPEndPoint(IPAddress.Parse(Properties.Settings.Default.FlightServerIP),
                                                       Properties.Settings.Default.FlightInfoPort);
             serverSide = new TcpListener(eP);
             this.serverSide.Start();
@@ -89,16 +66,13 @@ namespace FlightSimulator.Model
             BinaryReader reader = new BinaryReader(stream);
             String[] splitInput;
 
-            // opens server
-
-            Thread t = new Thread(() => {
+            this.thread = new Thread(() => {
                 while (!stop)
             {
+
                 // read the input fron the simulator
                 string input = "";
-                char c;
-
-                // read data untill \n
+                char c;  
                 while ((c = reader.ReadChar()) != '\n')
                 {
                     input += c;
@@ -115,7 +89,7 @@ namespace FlightSimulator.Model
                 stream.Close();
                 client.Close();
             });
-                t.Start();
+                this.thread.Start();
             }
             catch (SocketException e)
             {

@@ -32,13 +32,13 @@ namespace FlightSimulator
         }
         private void closeWindow(object sender, EventArgs e)
         {
-            if (Info.getInstance.isServerOpen())
+            if (ConnectionInfo.getInstance.isServerOpen())
             {
-                Info.getInstance.closeServer();
+                ConnectionInfo.getInstance.closeServer();
             }
-            if (Command.getInstance.isOpen())
+            if (ConnectionCommand.getInstance.isOpen())
             {
-                Command.getInstance.closeClient();
+                ConnectionCommand.getInstance.closeClient();
             }
         }
     }

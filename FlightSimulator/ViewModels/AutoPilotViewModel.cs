@@ -10,54 +10,48 @@ namespace FlightSimulator.ViewModels
 {
     class AutoPilotViewModel : BaseNotify
     {
-        private ICommand sendCommand;
-        private ICommand clearCommand;
-        private String textUser = "";
-        public Command commandClient;
+        private ICommand sendCommand = null;
+        private ICommand clearCommand = null;
+        private string text;
+        //private string color;
+        private bool startedWrite;
+        public ConnectionCommand commandClient;
         public bool isOkPressed = false;
-        public string oldTxt = "";
+        public string oldTxt;
 
         public AutoPilotViewModel()
         {
-            commandClient = Command.getInstance;
+            commandClient = ConnectionCommand.getInstance;
+            //color = "White";
+            text = "";
+            oldTxt = "";
+            startedWrite = false;
         }
 
-        // Property of TextUser
-        public String TextUser
+        // Property of UserText
+        public string UserText
         {
             get
             {
-                return this.textUser;
+                return text;
             }
             set
             {
-                textUser = value;
+                text = value;
+                startedWrite = true;
                 // notify that the text and background has change
-                NotifyPropertyChanged("TextUser");
+                NotifyPropertyChanged("UserText");
                 NotifyPropertyChanged("BackgroundColor");
             }
         }
 
         // Property of BackgroundColor
-        public String BackgroundColor
+        public string BackgroundColor
         {
             get
             {
-                // if no text the background is white
-                if (textUser == "")
-                {
-                    return "White";
-                }
-                else
-                {
-                    // if ok pressed and there is no change in text the background is white 
-                    if (isOkPressed && (TextUser == oldTxt))
-                    {
-                        return "White";
-                    }
-                    isOkPressed = false;
-                    return "Pink";
-                }
+                return startedWrite ? "Pink" : "White";
+              
             }
         }
 
@@ -86,8 +80,11 @@ namespace FlightSimulator.ViewModels
          */
         private void SendClick()
         {
-            commandClient.sendToSimulator(textUser);
-            oldTxt = TextUser;
+            string[] delimeter = { "\r\n" };
+            string[] commandLines = text.Split(delimeter, StringSplitOptions.None);
+            startedWrite = false;
+            commandClient.AutoSend(commandLines);
+            oldTxt = UserText;
             isOkPressed = true;
             NotifyPropertyChanged("BackgroundColor");
         }
@@ -97,7 +94,10 @@ namespace FlightSimulator.ViewModels
          */
         private void ClearClick()
         {
-            TextUser = "";
+            text = "";
+            startedWrite = false;
+            NotifyPropertyChanged("UserText");
+            NotifyPropertyChanged("BackgroundColor");
         }
 
     }

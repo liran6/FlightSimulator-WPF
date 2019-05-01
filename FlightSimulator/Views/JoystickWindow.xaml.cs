@@ -24,7 +24,7 @@ namespace FlightSimulator.Views
         public JoystickWindow()
         {
             InitializeComponent();
-            DataContext = new JoystickViewModel();
+            DataContext = new ManualViewModel();
         }
     }
 }
