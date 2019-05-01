@@ -1,14 +1,10 @@
 ﻿using FlightSimulator.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+
 
 namespace FlightSimulator.Model
 {
@@ -17,13 +13,12 @@ namespace FlightSimulator.Model
      */
    public class ConnectionInfo
     {
-        private bool stop;
+        private bool stop = false;
         private static ConnectionInfo instance = null;
         Thread thread;
         TcpClient client;
         TcpListener serverSide;
-      //  BinaryReader reader;
-       // NetworkStream stream;
+
 
 
         // constructor to initialize 
@@ -31,8 +26,7 @@ namespace FlightSimulator.Model
         {
             Lon = 0.0f;
             Lat = 0.0f;
-            stop = false;
-            
+                  
         }
 
         // Property of Lon
@@ -78,10 +72,10 @@ namespace FlightSimulator.Model
                     input += c;
                 }
 
-                // splits the input
+
                 splitInput = input.Split(',');
 
-                // gets the lon and lat from the input and add them to the lon and lat in the instance
+                
                 FlightBoardViewModel.getInstance.Lon = float.Parse(splitInput[0]);
                 FlightBoardViewModel.getInstance.Lat = float.Parse(splitInput[1]);
 

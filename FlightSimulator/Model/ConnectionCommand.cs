@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
@@ -12,7 +8,7 @@ namespace FlightSimulator.Model
 {
     class ConnectionCommand
     {
-        private bool isConnected;
+        private bool isConnected = false;
         private static ConnectionCommand instance = null;
         private Thread thread;
         private NetworkStream networkStream;
@@ -21,10 +17,7 @@ namespace FlightSimulator.Model
         private readonly static object mut = new object();
 
 
-        public ConnectionCommand()
-        {
-            this.isConnected = false;
-        }
+       // public ConnectionCommand() { }               
 
         public static ConnectionCommand getInstance
         {
@@ -90,9 +83,7 @@ namespace FlightSimulator.Model
             networkStream.Flush();              
         }
 
-        /*
-   * close the connection to the client, and the server that are connected to him
-   */
+
         public void closeClient()
         {
             this.isConnected = false;

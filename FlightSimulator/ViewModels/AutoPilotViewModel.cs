@@ -12,20 +12,15 @@ namespace FlightSimulator.ViewModels
     {
         private ICommand sendCommand = null;
         private ICommand clearCommand = null;
-        private string text;
-        //private string color;
-        private bool startedWrite;
-        public ConnectionCommand commandClient;
-        public bool isOkPressed = false;
-        public string oldTxt;
+        private string text;      
+        private bool writingStarted;
+        public ConnectionCommand commandClient;    
 
         public AutoPilotViewModel()
         {
             commandClient = ConnectionCommand.getInstance;
-            //color = "White";
             text = "";
-            oldTxt = "";
-            startedWrite = false;
+            writingStarted = false;
         }
 
         // Property of UserText
@@ -38,7 +33,7 @@ namespace FlightSimulator.ViewModels
             set
             {
                 text = value;
-                startedWrite = true;
+                writingStarted = true;
                 // notify that the text and background has change
                 NotifyPropertyChanged("UserText");
                 NotifyPropertyChanged("BackgroundColor");
@@ -50,7 +45,7 @@ namespace FlightSimulator.ViewModels
         {
             get
             {
-                return startedWrite ? "Pink" : "White";
+                return writingStarted ? "Pink" : "White";
               
             }
         }
@@ -60,8 +55,8 @@ namespace FlightSimulator.ViewModels
         {
             get
             {
-                // activate SendClick
-                return sendCommand ?? (sendCommand = new CommandHandler(() => SendClick()));
+                // activate OKClick
+                return sendCommand ?? (sendCommand = new CommandHandler(() => OKClick()));
             }
         }
 
@@ -75,27 +70,20 @@ namespace FlightSimulator.ViewModels
             }
         }
 
-        /*
-         * sent the command to the simulator, and change the back ground to white
-         */
-        private void SendClick()
+
+        private void OKClick()
         {
             string[] delimeter = { "\r\n" };
             string[] commandLines = text.Split(delimeter, StringSplitOptions.None);
-            startedWrite = false;
-            commandClient.AutoSend(commandLines);
-            oldTxt = UserText;
-            isOkPressed = true;
+            writingStarted = false;
+            commandClient.AutoSend(commandLines);     
             NotifyPropertyChanged("BackgroundColor");
         }
 
-        /*
-         * delete the text in the auto pilot
-         */
         private void ClearClick()
         {
             text = "";
-            startedWrite = false;
+            writingStarted = false;
             NotifyPropertyChanged("UserText");
             NotifyPropertyChanged("BackgroundColor");
         }
